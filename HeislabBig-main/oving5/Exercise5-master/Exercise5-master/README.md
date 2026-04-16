@@ -255,17 +255,25 @@ The problem is that there is no way to prioritize the cases, as Go will [choose 
 
 - Condition variables, Java monitors, and Ada protected objects are quite similar in what they do (temporarily yield execution so some other task can unblock us).
   - But in what ways do these mechanisms differ?
+  - These ways of implementing solutions to avoid race conditions differ in how they are implemented by the user. Condition variables use a user defined way of blocking the access to the variable. The guard is user defined. Java monitors lock and wait. In Java the owner is defined by who locks it. Ada protected objects is a good method. It holds a busy variable and can use user defines conditions as well.
 
 - Bugs in this kind of low-level synchronization can be hard to spot.
   - Which solutions are you most confident are correct?
+We think that the go soulutions are correct. 
   - Why, and what does this say about code quality?
+  We are most familiar with go. The code quality of the go solutions are the best.
 
 - We operated only with two priority levels here, but it makes sense for this "kind" of priority resource to support more priorities.
   - How would you extend these solutions to N priorities? Is it even possible to do this elegantly?
+  The go priority queue solutions will have problems with this. The others can be expanded.
   - What (if anything) does that say about code quality?
+  That scalability is a important factor of code quality.
 
 - In D's standard library, `getValue` for semaphores is not even exposed (probably because it is not portable – Windows semaphores don't have `getValue`, though you could hack it together with `ReleaseSemaphore()` and `WaitForSingleObject()`).
   - A leading question: Is using `getValue` *ever* appropriate?
+  No
   - Explain your intuition: What is it that makes `getValue` so dubious?
+  It is a direct memory access, and you might create a race condition.
 
 - Which one(s) of these different mechanisms do you prefer, both for this specific task and in general? (This is a matter of taste – there are no "right" answers here)
+The Ada method seems simple and require few lines of code. The go methods are easy to understand. 
